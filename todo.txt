@@ -29,5 +29,6 @@ Messages
 General
 -------
 * Unit testing / coverage framework
+    * use pieter's perl client libs for cross testing?
 * Apache httpd integration
-
+* WSGI integration (Brad?)
