@@ -1,0 +1,33 @@
+
+Things to do
+============
+
+Domain
+------
+* everything
+
+Feeds
+-----
+* everything except GET
+
+Joins
+-----
+* everything except GET
+* GET: canonical feed adress
+
+Pipes
+-----
+* everything
+* new pipe type "push" or "dialback" for having the pipe 
+  proacively posting its messages
+
+Messages
+--------
+* everything, including payload storage concept
+* CouchDB backend for faster store/retrieve (?)
+
+General
+-------
+* Unit testing / coverage framework
+* Apache httpd integration
+

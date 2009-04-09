@@ -1,0 +1,32 @@
+
+Ahkera coding rules and style guide
+-----------------------------------
+
+Be sensible. Keep your code lean and readable, just as the RestMS protocol. 
+Have a method do one thing, and one thing only. Have a class represent one
+thing, and one thing only. Beware of toolbox classes and the like.
+
+File encoding
+-------------
+All python and resource files are encoded in utf-8.
+
+Line breaks
+-----------
+Line breaks are <cr> only. No <lf>. Don't even think about <cr><lf>.
+(this is: Unix style, not windows style.)
+
+Indentation
+-----------
+Indentation is crucial in python code as it is part of the python syntax.
+Tabs are 4 characters, so indentations are 4 characters. "Tabs", in fact,
+are spaces.
+
+Line length and method length
+------------------------------
+Lines have 80 characters maximum. Methods are 25 lines maximum. If your
+code needs more, please refactor. These are somewhat soft rules - 
+there might be exceptions. Be prepared to justify your violations, though, 
+as you will be intensely challenged for every single one. While being 
+waterboarded.
+
+
