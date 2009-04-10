@@ -12,7 +12,7 @@ All python and resource files are encoded in utf-8.
 
 Line breaks
 -----------
-Line breaks are <cr> only. No <lf>. Don't even think about <cr><lf>.
+Line breaks are <lf> only. No <cr>. Don't even think about <cr><lf>.
 (this is: Unix style, not windows style.)
 
 Indentation
