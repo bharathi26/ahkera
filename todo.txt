@@ -2,18 +2,16 @@
 Things to do
 ============
 
-Domain
-------
-* everything
-
-Feeds
------
-* everything except GET
-
-Joins
------
-* everything except GET
-* GET: canonical feed adress
+General
+-------
+* clean up models/ sub directory namespace mess (see feed/main.py, line 21)
+* Unit testing / coverage framework
+    * use pieter's perl client libs for cross testing?
+    * provide a set of test commands (txt http snippets)
+      for the test server fixture 
+* Apache httpd mod_python integration
+* WSGI integration (Brad?)
+* Database-less backend (chaching, python serialization, ???)
 
 Pipes
 -----
@@ -26,9 +24,19 @@ Messages
 * everything, including payload storage concept
 * CouchDB backend for faster store/retrieve (?)
 
-General
--------
-* Unit testing / coverage framework
-    * use pieter's perl client libs for cross testing?
-* Apache httpd integration
-* WSGI integration (Brad?)
+Feeds
+-----
+* POST
+
+Domain
+------
+* everything
+
+
+Things done
+===========
+
+Joins
+-----
+* should work !
+

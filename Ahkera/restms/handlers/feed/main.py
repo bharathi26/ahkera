@@ -11,24 +11,17 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+
 from django.db import models
 from django.template import Context, loader
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404
 
-class feed(models.Model):
+from restms.handlers.base import BaseHandler
+import restms.handlers.join as join 
+
+class feed(BaseHandler):
     """ A RestMS feed. 
-   The XML specification provided by the client when creating a new feed has this format:
-
-    <?xml version="1.0"?>
-    <restms xmlns="http://www.imatix.com/schema/restms">
-        <feed
-         [ type="{feed type}" ]                  default is "topic"
-         [ title="{short title}" ]               optional title
-         [ license="{license name}" ]            optional license name
-         />
-    </restms>
-
     """
 
     # clutch to make django object-relational magic work
@@ -43,33 +36,28 @@ class feed(models.Model):
                      ( "rotary",     "rotary"   ),
                      ( "service",    "service"  ) )
     # table ----------
-    hash    = models.AutoField( primary_key = True )
-    name    = models.CharField( max_length = 100 )
-    type    = models.CharField( max_length = 1, choices = type_choices)
+    name    = models.CharField( max_length = 100, editable = False )
+    type    = models.CharField( max_length = 1, choices = type_choices, editable = False)
     title   = models.CharField( max_length = 100 )
     license = models.CharField( max_length = 100 )
-    created = models.DateTimeField( auto_now_add = True )
-    modified= models.DateTimeField( auto_now = True )
     # table ----------
+    resource_type = "feed"
 
     def __unicode__(self):
         return """#%s: "%s" (%s)""" % (self.hash, self.name, self.type)
 
-    def GET(self):
-        """ Retrieves the feed. This method conforms to the generic model and we do not explain it further. """
-        t = loader.get_template("feed/get.tmpl")
-        c = Context({'feed' : self})
-        return HttpResponse(t.render(c))
+    @models.permalink
+    def get_absolute_url(self):
+        return ("restms.views.feeder", str(self.hash))
 
-    def PUT(self):
-        """ Updates the feed. This method conforms to the generic model. The feed name and type cannot be modified. """
-        return "PUT" + self.__unicode__()
-
-    def DELETE(self):
-        """ Deletes the feed. This method conforms to the generic model and we do not explain it further."""
-        return "POST " + self.__unicode__()
-
-    def POST(self):
+    def POST(self, request):
         """ Sends a message to the feed or stage a content on the feed. We explain these in the description of messages """
-        return "DELETE " + self.__unicode__()
+        return HttpResponse("POST" + self.__unicode__() + " [" + self.xml + "]")
 
+    def DELETE(self,request):
+        """ DELETE a feed and all associated JOINs"""
+        try: 
+            join.main.join.objects.filter(feed = self.hash).delete()
+            self.delete()
+        except Exception, e: print e; return HttpResponseServerError()
+        return HttpResponse()

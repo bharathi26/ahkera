@@ -22,9 +22,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # restms url mapping
-    (r'^restms/resource/(?P<type>feed|message|join|pipe)_(?P<hash>[0-9]+)', 'Ahkera.restms.views.resource'),
-    (r'^restms/feed/(?P<name>.*)', 'Ahkera.restms.views.feeder'),
-    (r'^restms/domain/(?P<name>.*)', 'Ahkera.restms.views.domain'),
+    (r'^restms/resource/(?P<type>feed|message|join|pipe)_(?P<hash>[0-9]+)', 'restms.views.resource'),
+    (r'^restms/feed/(?P<name>.*)', 'restms.views.feeder'),
+    (r'^restms/domain/(?P<name>.*)', 'restms.views.domain'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:

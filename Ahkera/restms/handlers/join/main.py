@@ -13,38 +13,29 @@
 #   limitations under the License.
 from django.db import models
 from django.template import Context, loader
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404
 
-class join(models.Model):
+from restms.handlers.base import BaseHandler
+
+class join(BaseHandler):
     """ A RestMS join. """
 
     # clutch to make django object-relational magic work
     class Meta: app_label = 'restms'
 
     # table ----------
-    hash    = models.AutoField( primary_key = True, editable = False )
     address = models.CharField(max_length=100)
     feed    = models.ForeignKey('feed')
     pipe    = models.ForeignKey('pipe')
-    created = models.DateTimeField( auto_now_add = True, editable = False )
-    modified= models.DateTimeField( auto_now = True, editable = False )
     # table ----------
+    resource_type="join"
+
     def __unicode__(self):
         return "#%s: feed [%s] ==> pipe [%s]" % (self.hash, self.feed, self.pipe)
 
-    def GET(self):
-        """ Retrieves the join representation. This method conforms to the generic model and we do not explain it further. """
-        t = loader.get_template("join/get.tmpl")
-        c = Context({'join' : self})
-        return HttpResponse(t.render(c))
-
-    def DELETE(self):
-        """ Deletes the feed. This method conforms to the generic model and we do not explain it further."""
-        return "POST " + self.__unicode__()
-
     def _not_allowed(self):
-        """ Not allowed on Join """
+        """Return HTTP not allowed w/ list of allowed methods"""
         return HttpResponseNotAllowed(['GET', 'DELETE'])
 
     PUT = _not_allowed

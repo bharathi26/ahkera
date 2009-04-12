@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from Ahkera.restms.models import feed, pipe, join, message
+from restms.models import feed, pipe, join, message
 from django.contrib import admin
 
 class FeedAdmin(admin.ModelAdmin):

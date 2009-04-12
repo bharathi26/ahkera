@@ -28,9 +28,10 @@ python 2.x (as supported by django).
 Getting started
 ---------------
 - install python and django
-- go to your Ahkera source direcorty, run "python manage.py testserver admin.json"
+- go to your Ahkera source direcorty, run "python manage.py testserver admin.json restms.json"
   this will start a django test web server on localhost with user/pass admin/admin
-  for the database admin interface
+  for the database admin interface. It will also add some RestMS resource instances
+  (2 feeds, 3 joins, 3 pipes)
 - You now have a RestMS development server running at localhost:8000
 - look into todo.txt and start hacking :)
   OR

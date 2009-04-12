@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <restms xmlns="http://www.imatix.com/schema/restms">
     <join
-       address="{{join.address}}"
-       feed="{{join.feed.name}}"
+        address="{{join.address}}" {% comment %} 
+            The first char of get_absolute_url is a "/", 
+            as is the last char of base_url. So we cut the first char
+            from get_absolute_url. {% endcomment %}
+        feed="{{base_url}}{{join.feed.get_absolute_url|slice:"1:"}}"
      />
 </restms>

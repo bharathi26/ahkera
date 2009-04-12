@@ -11,16 +11,20 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-from django.http import HttpResponse, Http404
-import Ahkera.restms.models as handlers
+from django.http import HttpResponse, HttpResponseNotFound
+import restms.models as handlers
 
 def resource(request, type, hash):
     # find the corresponding resource object
     handler = getattr(handlers, type)
-    return getattr(handler.objects.get(hash=hash), request.method)()
+    try: res = handler.objects.get(hash=hash)
+    except: return HttpResponseNotFound()
+    return getattr(res, request.method)(request)
 
 def feeder(request, name=None):
-    return getattr(handlers.feed.objects.get(name=name), request.method)()
+    try: res = handlers.feed.objects.get(name=name)
+    except: return HttpResponseNotFound()
+    return getattr(res, request.method)(request)
 
 def domain(request, name = None):
     return HttpResponse("Domain handler for hash %s" % (hash,) )

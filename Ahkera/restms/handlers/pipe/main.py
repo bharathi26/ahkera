@@ -25,10 +25,11 @@ class pipe(models.Model):
                      ( "push",     "push"     ) )
     # table ----------
     hash    = models.AutoField( primary_key = True, editable = False )
-    name    = models.CharField( max_length = 100 )
     type    = models.CharField( max_length = 1, choices = pipe_choices )
     created = models.DateTimeField( auto_now_add = True, editable = False )
     modified= models.DateTimeField( auto_now = True, editable = False )
     # table ----------
+    resource_type="pipe"
+
     def __unicode__(self):
-        return """#%s: "%s" (%s)""" % (self.hash, self.name, self.type)
+        return """#%s: %s""" % (self.hash, self.type)
