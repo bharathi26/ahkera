@@ -12,30 +12,58 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 from django.db import models
+from django.template import Context, loader
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
 
-class message(models.Model):
+from restms.handlers.base import BaseHandler
+
+import content, header
+
+class message(BaseHandler):
     """ A RestMS Message. This table is for rapid prototyping ONLY.
         Messages will go into a faster store (like CouchDB) soon. """
 
     # clutch to make django object-relational magic work
     class Meta: app_label = 'restms'
 
-    hash            = models.AutoField( primary_key = True, editable = False )
-    address         = models.CharField( max_length = 100 )
-    delivery_mode   = models.CharField( max_length = 100 )
-    priority        = models.SmallIntegerField() # 0-9
-    correlation_id  = models.CharField( max_length = 100 )
-    reply_to        = models.CharField( max_length = 100 )
-    expiration      = models.DateTimeField()
-    message_id      = models.CharField( max_length = 100 )
-    timestamp       = models.DateTimeField()
-    type            = models.CharField( max_length = 100 )
-    user_id         = models.CharField( max_length = 100 )
-    app_id          = models.CharField( max_length = 100 )
-    sender_id       = models.CharField( max_length = 100 )
-    header_name     = models.TextField()
-    header_value    = models.TextField()
+    address = models.CharField( max_length = 100, blank = True )
+    id      = models.CharField( max_length = 100, blank = True )
+    reply_to= models.CharField( max_length = 100, blank = True )
 
-    created         = models.DateTimeField( auto_now_add = True, editable = False )
-    modified        = models.DateTimeField( auto_now = True, editable = False )
+    resource_type = "message"
 
+    # Methods:
+    #
+    # GET - retrieve the message.
+    # DELETE - delete the message.
+
+    def _not_allowed(self, request):
+        """Return HTTP not allowed w/ list of allowed methods"""
+        return HttpResponseNotAllowed(['GET', 'DELETE'])
+
+    def GET(self, request):
+        """ GET the message, its headers and contents.
+            (We currently only support staged content, no
+             embedded content)"""
+        try:
+            t = loader.get_template("message/get.xml")
+            c = Context({ 'message' : self,
+                          'headers' : msg_header.objects.filter(message=self.hash),
+                          'content' : content.objects.filter(message=self.hash),
+                          'base_url' : request.build_absolute_uri('/')})
+        except Exception, e: return HttpResponseServerError(str(e) + "\n")
+        return HttpResponse(t.render(c))
+
+    def DELETE(self,request):
+        """ DELETE a message and all associated content and headers"""
+        try: 
+            c = content.objects.filter(message = self.hash);
+            if c: c.delete()
+            h = msg_header.objects.filter(message = self.hash);
+            if h: h.delete()
+            self.delete()
+        except Exception, e: print e; return HttpResponseServerError()
+        return HttpResponse()
+
+    PUT = _not_allowed
+    POST = _not_allowed

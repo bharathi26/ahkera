@@ -1,6 +1,6 @@
 PUT /restms/feed/OneMore HTTP/1.1
-Content-Length:96
+Content-Length:120
 
 <restms>
 <feed name="OneMoreTime" type="direct" title="halloballo" license="naja" /> 
-</restms>               
+</restms>                                                          

@@ -19,8 +19,6 @@ from django.shortcuts import render_to_response, get_object_or_404
 
 from restms.handlers.processor import RestMSProcessor, RestMSProcessorException
 
-import traceback
-
 class BaseHandler(models.Model):
     """Abstract base class for RestMS resources"""
 
@@ -36,8 +34,14 @@ class BaseHandler(models.Model):
 
     @classmethod
     def writeable(cls, attr):
+        """Check wheter the field specified by attr is writeable"""
         # TODO Hack Alert: "editable" field property not exposed by Django?
         return cls._meta.get_field(attr).editable
+
+    @models.permalink
+    def get_absolute_url(self):
+        """Return absolute resource URI (without protocol / domain)"""
+        return ("restms.views.resource", self.resource_type, str(self.hash))
 
     class Meta: 
         app_label = 'restms'
@@ -47,7 +51,7 @@ class BaseHandler(models.Model):
         """ Generic GET rendering the type's default template with the
             corresponding object """
         try:
-            t = loader.get_template("".join([self.resource_type, "/get.tmpl"]))
+            t = loader.get_template("".join([self.resource_type, "/get.xml"]))
             c = Context({self.resource_type : self,
                          'base_url'         : request.build_absolute_uri('/')})
         except Exception, e: return HttpResponseServerError()
@@ -71,3 +75,8 @@ class BaseHandler(models.Model):
         try: self.delete()
         except Exception, e: return HttpResponseServerError()
         return HttpResponse()
+
+    def POST(self, request):
+        """ POST to be implemented by derived class. Base class will raise
+            an exception upon call."""
+        raise UserError("Abstract")

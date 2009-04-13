@@ -36,10 +36,11 @@ class feed(BaseHandler):
                      ( "rotary",     "rotary"   ),
                      ( "service",    "service"  ) )
     # table ----------
-    name    = models.CharField( max_length = 100, editable = False )
-    type    = models.CharField( max_length = 1, choices = type_choices, editable = False)
-    title   = models.CharField( max_length = 100 )
-    license = models.CharField( max_length = 100 )
+    name    = models.CharField( max_length = 100, editable=False )
+    type    = models.CharField( max_length = 1, choices = type_choices, editable=False, blank=True )
+    title   = models.CharField( max_length = 100, blank = True )
+    license = models.CharField( max_length = 100, blank = True )
+
     # table ----------
     resource_type = "feed"
 
@@ -50,8 +51,18 @@ class feed(BaseHandler):
     def get_absolute_url(self):
         return ("restms.views.feeder", str(self.hash))
 
+    # Methods:
+    #
+    # GET - retrieves the feed. (BaseHandler)
+    # PUT - updates the feed.  The feed name and type cannot be modified. (BaseHandler) 
+    # DELETE - deletes the feed. (and all associated JOINs)
+    # POST - sends a message to the feed or stage a content on the feed.
+
     def POST(self, request):
-        """ Sends a message to the feed or stage a content on the feed. We explain these in the description of messages """
+        """ Sends a message to the feed or stage a content on the feed."""
+        # TODO: spread / post message aaccording to feed type
+        # route the message to subscribed joins according to the subscription address (pattern)
+        #  We might want a separate routing class for this.
         return HttpResponse("POST" + self.__unicode__() + " [" + self.xml + "]")
 
     def DELETE(self,request):

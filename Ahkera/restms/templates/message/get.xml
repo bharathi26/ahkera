@@ -1,0 +1,10 @@
+{% extends "base.xml" %}
+{% block restms-xml %}    <message      {% if message.address %}
+        address="{{message.address}}"   {% endif %}{% if message.id %}
+        message_id="{{message.id}}"     {% endif %}{% if message.reply_to %}
+        reply_to="{{message.reply_to}}" {% endif %}
+     > {% for h in headers %}
+        <header name="{{h.name}}" value="{{h.value}}" /> {% endfor %} {% for c in content %}
+        <content href="{{base_url}}{{c.get_absolute_url|slice:"1:"}}" /> {% endfor %}
+     </message>
+{% endblock %}

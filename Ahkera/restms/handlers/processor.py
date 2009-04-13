@@ -12,7 +12,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
+
+# ============== Refactoring notes ====================
+# TODO: RestMSProcessor should be an abstract base class 
+#  to be implemented by RestMSProcessorXML and RestMSProcessorJSON
+# A Factory could provide a suitable processor depending on a request's
+#  Content-Type.
+
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError, HttpResponseForbidden
 import xml.parsers.expat
 import sys
 
@@ -35,41 +42,31 @@ class RestMSProcessor:
         RestMS resource properties (db fields) while respecting the 
         "editable" flag."""
 
-    def _read_some(self, chunk=1024):
-        # FIXME !!! HACK ALERT !!!: find a better way to access raw 
-        #  HTTP input streams. This os only tested on the django development
-        #  web server.
-        # FIXME If a payload is appended after a RestMS XML envelope we will
-        #  lose paload data when reading too much here. Maybe implementing
-        #  an Expat text_data callback which puts this trailing data into a
-        #  temporary Buffer would help.
-        """Read some bytes of input."""
-        try: return self._in_stream.read(chunk)
-        except AttributeError:
-            if self._req.environ['wsgi.input']: 
-                self._in_stream = self._req.environ['wsgi.input']
-            elif self._req._req: self._in_stream = self._req._req
-            else: _exc(HttpResponseServerError, "No input stream\n")
-        return self._in_stream.read(chunk)
-
     class xml_mapper():
-        def __init__(self, res):
-            """XML to restms object mapper"""
+        """XML to restms object mapper"""
+        def __init__(self, res, check_rdonly):
             self.done = False; self._tag_done = False; self._rest_xml = False
-            self._res = res
+            self._res = res; self._check_rdonly = check_rdonly
             self._xp = xml.parsers.expat.ParserCreate()
             self._xp.StartElementHandler = self._start_elem
             self._xp.EndElementHandler = self._end_elem
+
+        def _check_field_access(self, key, val):
+            try: old_val = getattr(self._res, key)
+            except: _exc(HttpResponseBadRequest, "".join(
+                    ["\"",key,"\" is not a valid property for resource type ",
+                        self._res.resource_type, " \n"]))
+            if (self._check_rdonly):
+                if (val != old_val) and not self._res.writeable(key):
+                    _exc(HttpResponseForbidden, "".join(
+                      ["Trying to change read-only attribute \"", key, "\"\n"]))
 
         def _start_elem(self, name, attrs):
             """Start element XML parser callback (e.g. <elem>) """
             if name == "restms": self._rest_xml = True; return
             if not self._rest_xml or (name != self._res.resource_type): return
             for key in attrs: 
-                old_val = getattr(self._res, key)
-                if (attrs[key] != old_val) and not self._res.writeable(key):
-                    _exc(HttpResponseBadRequest, "".join(
-                      ["Trying to change read-only attribute \"", key, "\"\n"]))
+                self._check_field_access(key, attrs[key])
                 setattr(self._res, key, attrs[key])
 
         def _end_elem(self, name):
@@ -81,22 +78,25 @@ class RestMSProcessor:
 
         def parse_chunk(self, chunk): self._xp.Parse(chunk)
 
-    def parse(self, request, restms_resource):
+# FIXME: this should be "process()"
+    def parse(self, request, restms_resource, check_readonly=True):
         """Main parser worker function. The request contents are parsed 
            and restms_resource properties are updated accordingly.
            @throws RestMSProcessorException
+           @param request incoming HTTP request to be parsed
+           @param restms_resource RestMS resource object to be updated
+           @param check_readonly=True Check for 'editable' property before
+                    updating fields (creating vs. updating objects).
+                    Write attempts to readonly fields will trigger
+                    a FORBIDDEN exception.
            """
         try: 
            len = int(request.META['CONTENT_LENGTH'])
            if len < 1: raise Exception()
         except: _exc( HttpResponseBadRequest,
                 "Content Length header field invalid\n")
-        self._req = request;
-        xp = RestMSProcessor.xml_mapper(restms_resource)
-        while (not xp.done) and (len > 0): 
-            chunksize = min(1024, len)
-            xp.parse_chunk(self._read_some(chunksize))
-            len -= chunksize
+        xp = RestMSProcessor.xml_mapper(restms_resource, check_readonly)
+        xp.parse_chunk(request.raw_post_data)
         if not xp.done: _exc( HttpResponseBadRequest,
                             "Invalid XML description\n")
 

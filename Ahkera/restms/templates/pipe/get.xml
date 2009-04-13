@@ -1,0 +1,12 @@
+{% extends "base.xml" %}
+{% block restms-xml %}    <pipe
+        type="{{pipe.type}}" {% if pipe.title %}
+        title="{{pipe.title}}"{% endif %} > {% for j in joins %}
+        <join href="{{base_url}}{{j.get_absolute_url|slice:"1:"}}" 
+            type="{{j.type}}" 
+            address="{{j.address}}"
+            feed="{{base_url}}{{j.feed.get_absolute_url|slice:"1:"}}" /> {% endfor %}{% for m in messages %}
+        <message href="{{base_url}}{{m.get_absolute_url|slice:"1:"}}" 
+            address="{{m.address}}"
+            message_id="{{m.id}}" /> {% endfor %}
+    </pipe> {% endblock %}

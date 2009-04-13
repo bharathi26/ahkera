@@ -11,36 +11,28 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+
 from django.db import models
-from django.template import Context, loader
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotAllowed
-from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
 
 from restms.handlers.base import BaseHandler
 
-class join(BaseHandler):
-    """ A RestMS join. """
-
+class content(BaseHandler):
+    """ A RestMS staged content."""
     # clutch to make django object-relational magic work
     class Meta: app_label = 'restms'
-    # helpers
-    type_choices = ( ( "",     ""   ), )
 
-    # table ----------
-    address = models.CharField(max_length=100)
-    type    = models.CharField( max_length = 1, choices = type_choices, editable=False, blank=True )
-    feed    = models.ForeignKey('feed')
-    pipe    = models.ForeignKey('pipe')
-    # table ----------
-    resource_type="join"
+    message         = models.ForeignKey('message', blank=True)
+    feed            = models.ForeignKey('feed')
+    content_type    = models.CharField ( max_length=100 )
 
-    # Methods:
-    #
-    # GET - retrieves the join representation.
-    # DELETE - deletes the join.
+    # This is the closest thing django has to a blob field.
+    #  We should use a document DB like CouchDB for 
+    #  staged content eventually.
+    payload         = models.TextField() 
+    #uri            = models.URLField(verify_exists=False)  # Document DB URI
 
-    def __unicode__(self):
-        return "#%s: feed [%s] ==> pipe [%s]" % (self.hash, self.feed, self.pipe)
+    resource_type   = "content"
 
     def _not_allowed(self, request):
         """Return HTTP not allowed w/ list of allowed methods"""
@@ -48,4 +40,7 @@ class join(BaseHandler):
 
     PUT = _not_allowed
     POST = _not_allowed
+
+    def GET(self, request):
+        return HttpResponse( content_type=self.content_type, content=self.payload  )
 

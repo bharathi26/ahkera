@@ -16,7 +16,7 @@ from restms.models import feed, pipe, join, message
 from django.contrib import admin
 
 class FeedAdmin(admin.ModelAdmin):
-    list_display = ('name', 'type', 'hash')
+    list_display = ('name', 'type', 'title', 'hash')
 
 class FeedForJoinInline(admin.TabularInline):
     model = feed

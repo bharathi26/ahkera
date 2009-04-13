@@ -1,0 +1,2 @@
+PUT /restms/resource/join_1 HTTP/1.1
+

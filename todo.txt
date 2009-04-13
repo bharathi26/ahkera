@@ -2,41 +2,64 @@
 Things to do
 ============
 
+Also look at http://t-lo.lighthouseapp.com/projects/29079-ahkera for open issues.
+
 General
 -------
+* Admin view for pipes, messages
+* Message routing - router.py? See feeds / POST below
+* Message lifecycle (what if e.g. a message is duplicated
+  due to multiple receivers? References, and the like...)
+* have POST handlers reply with a 201 created instead
+   of just calling th GET() handler of the resource created
+   (base.py and handler classes)
+* check / handle content type in requests
+    - message binary content
+    - restms+xml content (already handled)
+   (base.py and handler classes)
+* set / handle content type in responses
+    - restms+xml content (already provided)
+    - provide JSON output
+* conditional requests (depending on header field values)
 * clean up models/ sub directory namespace mess (see feed/main.py, line 21)
-* Unit testing / coverage framework
-    * use pieter's perl client libs for cross testing?
-    * provide a set of test commands (txt http snippets)
-      for the test server fixture 
+* get rid off the need for slice base urls in templates
+* Asynclets
 * Apache httpd mod_python integration
 * WSGI integration (Brad?)
 * Database-less backend (chaching, python serialization, ???)
 
+processor
+---------
+- major refacturing
+- process JSON content (extend processor.py)
+- process multiple RestMS tokens in one request
+
 Pipes
 -----
-* everything
+* GET, POST
 * new pipe type "push" or "dialback" for having the pipe 
   proacively posting its messages
 
 Messages
 --------
 * everything, including payload storage concept
+* opaque non-enveloped "binary" message content
 * CouchDB backend for faster store/retrieve (?)
 
 Feeds
 -----
 * POST
+    - content type evaluation
+    - message parsing
+    - header object creation
+    - content staging
+
+Joins
+-----
+* headers
 
 Domain
 ------
 * everything
-
-
-Things done
-===========
-
-Joins
------
-* should work !
+* check for pre-existing FEED on POST...
 

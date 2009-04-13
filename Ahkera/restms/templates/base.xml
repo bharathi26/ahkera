@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<restms xmlns="http://www.restms.org/schema/restms">
+{% block restms-xml %}
+{% endblock %}
+</restms> {% block payload %} {% endblock %}
