@@ -7,9 +7,6 @@ Also look at http://t-lo.lighthouseapp.com/projects/29079-ahkera for open issues
 General
 -------
 * Admin view for pipes, messages
-* Message routing - router.py? See feeds / POST below
-* Message lifecycle (what if e.g. a message is duplicated
-  due to multiple receivers? References, and the like...)
 * have POST handlers reply with a 201 created instead
    of just calling th GET() handler of the resource created
    (base.py and handler classes)
@@ -36,18 +33,18 @@ processor
 
 Pipes
 -----
-* GET, POST
+* TESTS !!!
 * new pipe type "push" or "dialback" for having the pipe 
   proacively posting its messages
 
 Messages
 --------
-* everything, including payload storage concept
-* opaque non-enveloped "binary" message content
+* TESTS !!!
 * CouchDB backend for faster store/retrieve (?)
 
 Feeds
 -----
+* TESTS !!!
 * POST
     - content type evaluation
     - message parsing
@@ -56,10 +53,11 @@ Feeds
 
 Joins
 -----
+* TESTS !!!
 * headers
 
 Domain
 ------
 * everything
-* check for pre-existing FEED on POST...
+* check for pre-existing FEED on POST (?)
 
