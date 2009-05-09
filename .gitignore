@@ -1,0 +1,12 @@
+# Ahkera project GIT ignore file. All files matching the patterns
+#  below will be ignored by git by default (although you can --force
+#  git to accept them anyway).
+
+# compiled python bytecode
+*.pyc
+
+# vim boo-boos
+*.swp
+
+# Ahkera pyc files
+Ahkera/
