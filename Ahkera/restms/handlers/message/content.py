@@ -12,35 +12,74 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest
+from ..base import BaseHandler
 
-from restms.handlers.base import BaseHandler
+class content_data(BaseHandler):
+    """RestMS message content data. This table is for 
+        rapid prototyping ONLY.
+        Content will go into a faster store (like CouchDB) soon. """
 
-class content(BaseHandler):
-    """ A RestMS staged content."""
-    # clutch to make django object-relational magic work
-    class Meta: app_label = 'restms'
+    type        = models.CharField( max_length = 100, blank = True )
+    encoding    = models.CharField( max_length = 100, blank = True )
+    embedded    = models.BooleanField()
+    value       = models.TextField()
 
-    message         = models.ForeignKey('message', blank=True)
-    feed            = models.ForeignKey('feed')
-    content_type    = models.CharField ( max_length=100 )
+    class Meta: 
+        app_label = 'restms'
 
-    # This is the closest thing django has to a blob field.
-    #  We should use a document DB like CouchDB for 
-    #  staged content eventually.
-    payload         = models.TextField() 
-    #uri            = models.URLField(verify_exists=False)  # Document DB URI
+    def __unicode__(self):
+        return """#%s: %s,%s (embd: %s, len %s)""" % (
+                self.hash, self.type, self.encoding, str(self.embedded), len(self.value))
 
-    resource_type   = "content"
+    def delete_if_not_referenced(self):
+        # FIXME: This might be racy.
+        try:
+            self.content_set.all()
+        except ObjectDoesNotExist:
+            super(content_data, self).delete()
 
-    def _not_allowed(self, request):
-        """Return HTTP not allowed w/ list of allowed methods"""
-        return HttpResponseNotAllowed(['GET', 'DELETE'])
 
-    PUT = _not_allowed
-    POST = _not_allowed
+class content(models.Model):
+    """A RestMS message content. As messages, contents can be in multiple
+       pipes, but always belong to the same message in these pipes."""
+    hash        = models.AutoField( primary_key = True )
+    message     = models.ForeignKey('message')
+    data        = models.ForeignKey('content_data')
+
+    @models.permalink
+    def get_absolute_url(self):
+        """Return absolute resource URI (without protocol / domain)"""
+        return ("restms.views.resource", ['content', str(self.hash)])
+
+    class Meta: 
+        app_label = 'restms'
+
+    def __unicode__(self):
+        return """#%s: %s,%s (embd: %s, len %s)""" % (
+                self.hash, self.data.type, self.data.encoding, 
+                str(self.data.embedded), len(self.data.value))
+
+    # Methods:
+    # GET - retrieve the content.
+    # DELETE - delete the content.
 
     def GET(self, request):
-        return HttpResponse( content_type=self.content_type, content=self.payload  )
+        if self.data.embedded:
+            return HttpResponseBadRequest()
+        return HttpResponse( self.data.value, 
+                             content_type = self.data.type)
+
+    def DELETE(self, request):
+        if self.data.embedded:
+            return HttpResponseBadRequest()
+        self.delete()
+        return HttpResponse()
+
+    def delete(self):
+        data = self.data
+        super(content, self).delete()
+        data.delete_if_not_referenced()
 

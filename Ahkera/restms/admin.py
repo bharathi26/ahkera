@@ -12,8 +12,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from restms.models import feed, pipe, join, message
 from django.contrib import admin
+from restms.models import feed, pipe, join, message, domain
+from handlers.message.main import message_header, message_data
+from handlers.message.content import content, content_data
+from handlers.join.main import join_header
+from handlers.domain.profile import profile
 
 class FeedAdmin(admin.ModelAdmin):
     list_display = ('name', 'type', 'title', 'hash')
@@ -27,8 +31,28 @@ class JoinInline(admin.TabularInline):
     model = join
     extra = 1
 
+class JoinHeaderInline(admin.TabularInline):
+    model = join_header
+    extra = 1
+
 class JoinAdmin(admin.ModelAdmin):
-    pass
+    inlines = [ JoinHeaderInline ]
+
+class MessageHeaderInline(admin.TabularInline):
+    model = message_header
+    extra = 1
+
+class MessageInline(admin.TabularInline):
+    model = message
+    extra = 1
+
+class ContentInline(admin.TabularInline):
+    model = content
+    extra = 5
+
+class ContentDataInline(admin.TabularInline):
+    model = content_data
+    extra = 1
 
 class PipeAdmin(admin.ModelAdmin):
     inlines = [ JoinInline ]
@@ -36,5 +60,12 @@ class PipeAdmin(admin.ModelAdmin):
 admin.site.register(feed, FeedAdmin)
 admin.site.register(pipe, PipeAdmin)
 admin.site.register(join, JoinAdmin)
-admin.site.register(message)
+admin.site.register(join_header)
+admin.site.register(message, inlines=[ContentInline])
+admin.site.register(message_data, inlines=[MessageHeaderInline, MessageInline])
+admin.site.register(message_header)
+admin.site.register(content)
+admin.site.register(content_data, inlines=[ContentInline])
+admin.site.register(domain)
+admin.site.register(profile)
 

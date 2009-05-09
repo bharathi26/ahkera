@@ -14,11 +14,10 @@
 
 from django.db import models
 from django.template import Context, loader
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
-from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 
-from restms.handlers.base import BaseHandler
-import restms.handlers.join as join 
+from ..base import BaseHandler
+from .. import message  
 
 class feed(BaseHandler):
     """ A RestMS feed. 
@@ -27,21 +26,14 @@ class feed(BaseHandler):
     # clutch to make django object-relational magic work
     class Meta: app_label = 'restms'
 
-    # helpers
-    type_choices = ( ( "fanout",     "fanout"   ),
-                     ( "direct",     "direct"   ),
-                     ( "topic",      "topic"    ),
-                     ( "headers",    "headers"  ),
-                     ( "system",     "system"   ),
-                     ( "rotary",     "rotary"   ),
-                     ( "service",    "service"  ) )
     # table ----------
     name    = models.CharField( max_length = 100, editable=False )
-    type    = models.CharField( max_length = 1, choices = type_choices, editable=False, blank=True )
+    type    = models.CharField( max_length = 100, blank = True )
     title   = models.CharField( max_length = 100, blank = True )
     license = models.CharField( max_length = 100, blank = True )
-
+    domain  = models.ForeignKey('domain')
     # table ----------
+
     resource_type = "feed"
 
     def __unicode__(self):
@@ -49,7 +41,7 @@ class feed(BaseHandler):
 
     @models.permalink
     def get_absolute_url(self):
-        return ("restms.views.feeder", str(self.hash))
+        return ("restms.views.feeder", [str(self.name)])
 
     # Methods:
     #
@@ -58,17 +50,21 @@ class feed(BaseHandler):
     # DELETE - deletes the feed. (and all associated JOINs)
     # POST - sends a message to the feed or stage a content on the feed.
 
+    GET = lambda self, req: self.default_GET(req)
+    PUT = lambda self, req: self.default_PUT(req)
+
     def POST(self, request):
         """ Sends a message to the feed or stage a content on the feed."""
         # TODO: spread / post message aaccording to feed type
         # route the message to subscribed joins according to the subscription address (pattern)
         #  We might want a separate routing class for this.
-        return HttpResponse("POST" + self.__unicode__() + " [" + self.xml + "]")
+        raise AttributeError("NOT IMPLEMENTED")
 
     def DELETE(self,request):
         """ DELETE a feed and all associated JOINs"""
         try: 
-            join.main.join.objects.filter(feed = self.hash).delete()
-            self.delete()
-        except Exception, e: print e; return HttpResponseServerError()
+            self.join_set.delete()
+        except: pass
+        self.delete()
         return HttpResponse()
+

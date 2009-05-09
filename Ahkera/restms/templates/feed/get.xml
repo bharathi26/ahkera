@@ -1,7 +1,7 @@
 {% extends "base.xml" %}
 {% block restms-xml %}    <feed
        name="{{feed.name}}"
-       type="{{feed.type}}" {% if feed.title %}
+       type="{{feed.type}}"{% if feed.title %}
        title="{{feed.title}}"{% endif %}{% if feed.license %}
        license="{{feed.license}}"{% endif %}
-     /> {% endblock %}
+     />{% endblock %}

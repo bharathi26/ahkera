@@ -11,13 +11,3 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-from django.db import models
-
-class msg_header(models.Model):
-    """ A message header. """
-    # clutch to make django object-relational magic work
-    class Meta: app_label = 'restms'
-
-    message = models.ForeignKey('message')
-    name    = models.CharField( max_length = 100 )
-    value   = models.CharField( max_length = 100 )

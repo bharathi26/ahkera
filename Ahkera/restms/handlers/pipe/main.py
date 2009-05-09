@@ -13,10 +13,10 @@
 #   limitations under the License.
 from django.db import models
 from django.template import Context, loader
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from restms.handlers.base import BaseHandler
 
-from restms.handlers.processor import RestMSProcessor, RestMSProcessorException
+from ..processor import RestMSXMLProcessor, RestMSProcessorException
 
 import restms.handlers.join as join 
 
@@ -26,17 +26,12 @@ class pipe(BaseHandler):
     # clutch to make django object-relational magic work
     class Meta: app_label = 'restms'
 
-    type_choices = ( ( "fifo",     "fifo"     ),
-                     ( "stream",   "stream"   ),
-                     ( "ondemand", "ondemand" ),
-                     ( "push",     "push"     ) )
     # table ----------
-    type    = models.CharField( max_length=1, choices=type_choices, blank=True )
-    messages= models.ManyToManyField('message', blank=True)
-    title   = models.CharField( blank=True, max_length="100" )
+    type    = models.CharField( max_length=100, blank =True )
+    title   = models.CharField( blank=True, max_length=100 )
     # table ----------
-    resource_type="pipe"
 
+    resource_type = "pipe"
     # Methods:
     #
     # GET - retrieves the pipe representation.
@@ -44,34 +39,27 @@ class pipe(BaseHandler):
     # POST - creates a new join for the pipe.
 
     def __unicode__(self):
-        return """#%s: %s""" % (self.hash, self.type)
+        return """#%s: %s (%s)""" % (self.hash, self.title, self.type)
 
     def GET(self, request):
         """GET a pipe, its associated JOINs and all its messages """
-        try:
-            t = loader.get_template("pipe/get.xml")
-            c = Context({ 'pipe'    : self,
-                          'joins'   : join.main.join.objects.filter(pipe = self.hash),
-                          'messages': self.messages.all(),
-                          'base_url': request.build_absolute_uri('/')})
-        except Exception, e: return HttpResponseServerError()
+        t = loader.get_template("pipe/get.xml")
+        c = Context({ 'pipe'    : self,
+                      'joins'   : self.join_set.all(),
+                      'messages': self.message_set.all(),
+                      'base_url': request.build_absolute_uri('/')})
         return HttpResponse(t.render(c))
 
     def POST(self, request): 
         """ Create a new JOIN. """
-        j = join.main.join(pipe = self.hash)
-        RestMSProcessor().parse(request, j, check_readonly = False)
-        j.save()
+        raise AttributeError("NOT IMPLEMENTED")
+        j = self.join_set.create()
+        RestMSProcessor().create_resource(request, j, "join")
         return j.GET()
 
     def DELETE(self,request):
         """ DELETE a pipe and all associated JOINs"""
-        try: 
-            join.main.join.objects.filter(pipe= self.hash).delete()
-            self.delete()
-        except Exception, e: print e; return HttpResponseServerError()
+        try: self.join_set.delete()
+        except: pass
+        self.delete()
         return HttpResponse()
-
-    def PUT (self, request):
-        """PUT not allowed on pipes."""
-        return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])

@@ -11,20 +11,39 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseNotAllowed
+from django.core.exceptions import ObjectDoesNotExist
 import restms.models as handlers
+
+def _handler_or_405(method, resource, args):
+    try:
+        handler = getattr(resource, method)
+    except AttributeError:
+        allowed = [ m for m in ('GET', 'PUT', 'POST', 'DELETE') 
+                    if hasattr(resource, m) ]
+        return HttpResponseNotAllowed(allowed)
+    return handler(*args)
 
 def resource(request, type, hash):
     # find the corresponding resource object
     handler = getattr(handlers, type)
-    try: res = handler.objects.get(hash=hash)
-    except: return HttpResponseNotFound()
-    return getattr(res, request.method)(request)
+    try: 
+        res = handler.objects.get(hash=hash)
+    except ObjectDoesNotExist: 
+        return HttpResponseNotFound()
+    return _handler_or_405(request.method, res, (request,))
 
 def feeder(request, name=None):
-    try: res = handlers.feed.objects.get(name=name)
-    except: return HttpResponseNotFound()
-    return getattr(res, request.method)(request)
+    try: 
+        res = handlers.feed.objects.get(name=name)
+    except ObjectDoesNotExist: 
+        return HttpResponseNotFound()
+    return _handler_or_405(request.method, res, (request,))
 
 def domain(request, name = None):
-    return HttpResponse("Domain handler for hash %s" % (hash,) )
+    try: 
+        res = handlers.domain.objects.get(name=name)
+    except ObjectDoesNotExist: 
+        return HttpResponseNotFound()
+    return _handler_or_405(request.method, res, (request,))
+

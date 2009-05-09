@@ -6,45 +6,40 @@ Also look at http://t-lo.lighthouseapp.com/projects/29079-ahkera for open issues
 
 General
 -------
-* Admin view for pipes, messages
-* have POST handlers reply with a 201 created instead
-   of just calling th GET() handler of the resource created
-   (base.py and handler classes)
+* generic callback-based restms resource parser
+* ALL POST handlers
 * check / handle content type in requests
     - message binary content
-    - restms+xml content (already handled)
+    - restms+xml content
    (base.py and handler classes)
 * set / handle content type in responses
     - restms+xml content (already provided)
-    - provide JSON output
+* provide JSON output / templates
 * conditional requests (depending on header field values)
-* clean up models/ sub directory namespace mess (see feed/main.py, line 21)
-* get rid off the need for slice base urls in templates
+* clean up models/ sub directory namespace mess (see models.py, feed/main.py, line 21)
 * Asynclets
-* Apache httpd mod_python integration
-* WSGI integration (Brad?)
-* Database-less backend (chaching, python serialization, ???)
+* httpd mod_python, mod_wsgi integration
+* Database-less backend (memcached, sqlite :memory:, python serialization, ???)
 
 processor
 ---------
-- major refacturing
+- major refacturing, rewriting and cleanup
 - process JSON content (extend processor.py)
 - process multiple RestMS tokens in one request
 
 Pipes
 -----
-* TESTS !!!
+* POST
 * new pipe type "push" or "dialback" for having the pipe 
   proacively posting its messages
 
 Messages
 --------
-* TESTS !!!
+* POST
 * CouchDB backend for faster store/retrieve (?)
 
 Feeds
 -----
-* TESTS !!!
 * POST
     - content type evaluation
     - message parsing
@@ -53,11 +48,10 @@ Feeds
 
 Joins
 -----
-* TESTS !!!
+* POST
 * headers
 
 Domain
 ------
-* everything
-* check for pre-existing FEED on POST (?)
+* POST
 

@@ -1,0 +1,13 @@
+{% extends "base.xml" %}
+{% block restms-xml %}    <domain title="{{domain.title}}">{% for p in profiles %}
+        <profile
+            name="{{p.name}}"
+            title="{{p.title}}"
+            href="{{p.href}}" />{% endfor %}{% for f in feeds %}
+        <feed
+            name="{{f.name}}"
+            title="{{f.title}}"
+            type="{{f.type}}"
+            license="{{f.license}}"
+            href="{{base_url}}{{f.get_absolute_url|slice:"1:"}}" />{% endfor %}
+    </domain>{% endblock %}

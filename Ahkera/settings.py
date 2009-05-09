@@ -89,7 +89,23 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.contenttypes',
-    'Ahkera.restms',
     'django.contrib.sessions',
+    'Ahkera.restms',
 #    'django.contrib.sites',
 )
+
+# using coverage significantly increases test runtime
+TEST_RUNNER = "restms.tests.test_runner_with_coverage"
+COVERAGE_MODULES = ( 
+    "restms.handlers.base",
+    "restms.handlers.header",
+    "restms.handlers.processor",
+    "restms.handlers.domain.main",
+    "restms.handlers.domain.profile",
+    "restms.handlers.feed.main",
+    "restms.handlers.join.main",
+    "restms.handlers.message.main",
+    "restms.handlers.message.content",
+    "restms.handlers.pipe.main",
+)
+                    

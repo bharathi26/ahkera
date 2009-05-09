@@ -11,13 +11,23 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-from django.db import models
 
-# Clutchy code to make django object-relational magic work...
-from handlers.feed.main import feed
-from handlers.pipe.main import pipe
-from handlers.message.main import message
-from handlers.message.content import content 
-from handlers.join.main import join
-from handlers.domain.main import domain
+from django.db import models
+from base import BaseHandler
+
+class base_header(BaseHandler):
+    """Abstract base class for RestMS headers"""
+
+    name    = models.CharField( max_length = 100, blank = True )
+    value   = models.CharField( max_length = 100, blank = True )
+
+    resource_type = "header"
+
+    def __unicode__(self):
+        return """#%s: "%s" = "%s" """ % (
+                self.hash, self.name, self.value)
+
+    class Meta: 
+        app_label = 'restms'
+        abstract = True
 

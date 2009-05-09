@@ -11,13 +11,23 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+
 from django.db import models
 
-# Clutchy code to make django object-relational magic work...
-from handlers.feed.main import feed
-from handlers.pipe.main import pipe
-from handlers.message.main import message
-from handlers.message.content import content 
-from handlers.join.main import join
-from handlers.domain.main import domain
+class profile(models.Model):
+    """ A RestMS domain profile """
+    # clutch to make django object-relational magic work
+    class Meta: app_label = 'restms'
+
+    # table ----------
+    name    = models.CharField( max_length = 100 )
+    title   = models.CharField( max_length = 100, blank = True )
+    href    = models.URLField( verify_exists = False )
+    domain  = models.ForeignKey('domain')
+    # table ----------
+    
+    resource_type = "profile"
+
+    def __unicode__(self):
+        return """%s: %s""" % (self.name, self.title)
 

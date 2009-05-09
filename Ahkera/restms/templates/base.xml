@@ -2,4 +2,4 @@
 <restms xmlns="http://www.restms.org/schema/restms">
 {% block restms-xml %}
 {% endblock %}
-</restms> {% block payload %} {% endblock %}
+</restms>

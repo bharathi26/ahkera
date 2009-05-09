@@ -1,0 +1,374 @@
+[
+ {
+  "pk": 1, 
+  "model": "restms.feed", 
+  "fields": {
+   "domain": 1, 
+   "name": "Announcements", 
+   "license": "None", 
+   "title": "Announcement channel.", 
+   "created": "2009-05-08 11:05:49", 
+   "modified": "2009-05-08 11:05:49", 
+   "type": ""
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.feed", 
+  "fields": {
+   "domain": 1, 
+   "name": "commands", 
+   "license": "GPL", 
+   "title": "Command processing queue", 
+   "created": "2009-05-08 11:06:12", 
+   "modified": "2009-05-08 11:06:12", 
+   "type": "fifo"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.feed", 
+  "fields": {
+   "domain": 1, 
+   "name": "direct", 
+   "license": "proprietary", 
+   "title": "Direct feed", 
+   "created": "2009-05-08 11:06:55", 
+   "modified": "2009-05-08 11:06:55", 
+   "type": "direct"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.pipe", 
+  "fields": {
+   "title": "server #1 inbox", 
+   "type": "", 
+   "modified": "2009-05-08 11:08:39", 
+   "created": "2009-05-08 11:08:13"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.pipe", 
+  "fields": {
+   "title": "server #2 inbox", 
+   "type": "", 
+   "modified": "2009-05-08 11:09:13", 
+   "created": "2009-05-08 11:09:13"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.pipe", 
+  "fields": {
+   "title": "My Mailbox", 
+   "type": "direct", 
+   "modified": "2009-05-08 11:09:54", 
+   "created": "2009-05-08 11:09:43"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.content_data", 
+  "fields": {
+   "embedded": true, 
+   "encoding": "ascii", 
+   "created": "2009-05-08 11:34:43", 
+   "modified": "2009-05-08 11:38:09", 
+   "value": "Das Reh springt hoch, das Reh springt weit, warum auch nicht, es hat ja Zeit.", 
+   "type": "text/funny"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.content_data", 
+  "fields": {
+   "embedded": false, 
+   "encoding": "ascii", 
+   "created": "2009-05-08 11:38:01", 
+   "modified": "2009-05-08 11:38:01", 
+   "value": "The wise programmer is told about Tao\nAnd follows it.\nThe average programmer is told about Tao\nAnd searches for it.\nThe foolish programmer is told about Tao\nAnd laughs at it.\n\nIf it were not for laughter, there would be no Tao.\n", 
+   "type": "text/philosophic"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.content_data", 
+  "fields": {
+   "embedded": true, 
+   "encoding": "ascii", 
+   "created": "2009-05-08 11:38:44", 
+   "modified": "2009-05-08 11:38:44", 
+   "value": "Do something! NOW!", 
+   "type": "text/cmd"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.content", 
+  "fields": {
+   "message": 1, 
+   "data": 1
+  }
+ },
+ {
+  "pk": 2, 
+  "model": "restms.content", 
+  "fields": {
+   "message": 1, 
+   "data": 2
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.content", 
+  "fields": {
+   "message": 5, 
+   "data": 2
+  }
+ }, 
+ {
+  "pk": 4, 
+  "model": "restms.content", 
+  "fields": {
+   "message": 2, 
+   "data": 3
+  }
+ }, 
+ {
+  "pk": 5, 
+  "model": "restms.content", 
+  "fields": {
+   "message": 3, 
+   "data": 3
+  }
+ }, 
+ {
+  "pk": 6, 
+  "model": "restms.content", 
+  "fields": {
+   "message": 4, 
+   "data": 3
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.message_data", 
+  "fields": {
+   "reply_to": "me", 
+   "message_id": "0815", 
+   "address": "*.*", 
+   "modified": "2009-05-08 11:23:44", 
+   "created": "2009-05-08 11:23:44"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.message_data", 
+  "fields": {
+   "reply_to": "nobody", 
+   "message_id": "4711", 
+   "address": "next", 
+   "modified": "2009-05-08 11:26:52", 
+   "created": "2009-05-08 11:24:27"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.message_data", 
+  "fields": {
+   "reply_to": "the pope", 
+   "message_id": "12345", 
+   "address": "trallalla", 
+   "modified": "2009-05-08 11:27:31", 
+   "created": "2009-05-08 11:27:31"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.message_header", 
+  "fields": {
+   "value": "heyho", 
+   "message": 1, 
+   "modified": "2009-05-08 11:23:44", 
+   "name": "my_header", 
+   "created": "2009-05-08 11:23:44"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.message_header", 
+  "fields": {
+   "value": "123", 
+   "message": 2, 
+   "modified": "2009-05-08 11:24:27", 
+   "name": "funny header", 
+   "created": "2009-05-08 11:24:27"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.message_header", 
+  "fields": {
+   "value": "header value", 
+   "message": 3, 
+   "modified": "2009-05-08 11:27:31", 
+   "name": "one more", 
+   "created": "2009-05-08 11:27:31"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.message", 
+  "fields": {
+   "pipe": 1, 
+   "data": 1
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.message", 
+  "fields": {
+   "pipe": 1, 
+   "data": 2
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.message", 
+  "fields": {
+   "pipe": 2, 
+   "data": 2
+  }
+ }, 
+ {
+  "pk": 4, 
+  "model": "restms.message", 
+  "fields": {
+   "pipe": 3, 
+   "data": 2
+  }
+ }, 
+ {
+  "pk": 5, 
+  "model": "restms.message", 
+  "fields": {
+   "pipe": 3, 
+   "data": 3
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.join_header", 
+  "fields": {
+   "value": "for a join", 
+   "join": 5, 
+   "modified": "2009-05-08 11:15:47", 
+   "name": "my very own header", 
+   "created": "2009-05-08 11:15:47"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.join_header", 
+  "fields": {
+   "value": "for the same join", 
+   "join": 5, 
+   "modified": "2009-05-08 11:16:01", 
+   "name": "plus another header", 
+   "created": "2009-05-08 11:16:01"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.join_header", 
+  "fields": {
+   "value": "for a command join", 
+   "join": 3, 
+   "modified": "2009-05-08 11:16:21", 
+   "name": "test header", 
+   "created": "2009-05-08 11:16:21"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.join", 
+  "fields": {
+   "feed": 2, 
+   "created": "2009-05-08 11:08:13", 
+   "modified": "2009-05-08 11:08:13", 
+   "pipe": 1, 
+   "address": "*", 
+   "type": ""
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "restms.join", 
+  "fields": {
+   "feed": 1, 
+   "created": "2009-05-08 11:08:39", 
+   "modified": "2009-05-08 11:08:39", 
+   "pipe": 1, 
+   "address": "server.warn.*", 
+   "type": ""
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "restms.join", 
+  "fields": {
+   "feed": 2, 
+   "created": "2009-05-08 11:09:13", 
+   "modified": "2009-05-08 11:16:21", 
+   "pipe": 2, 
+   "address": "*", 
+   "type": ""
+  }
+ }, 
+ {
+  "pk": 4, 
+  "model": "restms.join", 
+  "fields": {
+   "feed": 1, 
+   "created": "2009-05-08 11:09:43", 
+   "modified": "2009-05-08 11:09:43", 
+   "pipe": 3, 
+   "address": "events.*", 
+   "type": ""
+  }
+ }, 
+ {
+  "pk": 5, 
+  "model": "restms.join", 
+  "fields": {
+   "feed": 3, 
+   "created": "2009-05-08 11:09:54", 
+   "modified": "2009-05-08 11:16:01", 
+   "pipe": 3, 
+   "address": "*", 
+   "type": ""
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.profile", 
+  "fields": {
+   "domain": 1, 
+   "href": "http://www.restms.org/3:Defaults", 
+   "name": "defaults", 
+   "title": "The defaults profile"
+  }
+ }, 
+ {
+  "pk": 1, 
+  "model": "restms.domain", 
+  "fields": {
+   "title": "The Serenity domain", 
+   "modified": "2009-05-08 11:04:36", 
+   "name": "Serenity", 
+   "created": "2009-05-08 11:04:36"
+  }
+ }
+]
