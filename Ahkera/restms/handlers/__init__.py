@@ -18,7 +18,7 @@ from django.template import Context, loader
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404
 
-from processor import RestMSXMLProcessor, RestMSProcessorException
+from restms.processor import RestMSProcessorException
 
 import restms.handlers
 
