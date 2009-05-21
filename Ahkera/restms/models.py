@@ -14,10 +14,10 @@
 from django.db import models
 
 # Clutchy code to make django object-relational magic work...
-from handlers.feed.main import feed
-from handlers.pipe.main import pipe
-from handlers.message.main import message
+from handlers.feed import feed
+from handlers.pipe import pipe
+from handlers.message import message
 from handlers.message.content import content 
-from handlers.join.main import join
-from handlers.domain.main import domain
+from handlers.join import join
+from handlers.domain import domain
 

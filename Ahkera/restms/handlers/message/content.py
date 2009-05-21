@@ -15,7 +15,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.http import HttpResponse, HttpResponseBadRequest
-from ..base import BaseHandler
+from restms.handlers import BaseHandler
 
 class content_data(BaseHandler):
     """RestMS message content data. This table is for 
@@ -48,6 +48,8 @@ class content(models.Model):
     hash        = models.AutoField( primary_key = True )
     message     = models.ForeignKey('message')
     data        = models.ForeignKey('content_data')
+
+    resource_type = "content"
 
     @models.permalink
     def get_absolute_url(self):

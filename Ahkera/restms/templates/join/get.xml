@@ -1,6 +1,6 @@
 {% extends "base.xml" %}
 {% block restms-xml %}    <join
-        address="{{join.address}}">
-        feed="{{base_url}}{{feed.get_absolute_url|slice:"1:"}}"{% for h in headers %}
+        address="{{join.address}}"
+        feed="{{base_url}}{{feed.get_absolute_url|slice:"1:"}}">{% for h in headers %}
         <header name="{{h.name}}" value="{{h.value}}" />{% endfor %}
-     </join>{% endblock %}
+    </join>{% endblock %}

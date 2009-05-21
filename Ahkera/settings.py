@@ -94,8 +94,11 @@ INSTALLED_APPS = (
 #    'django.contrib.sites',
 )
 
-# using coverage significantly increases test runtime
-TEST_RUNNER = "restms.tests.test_runner_with_coverage"
+# Uncomment to use custom test runner which tracks code coverage. 
+#   (Using coverage significantly increases test runtime)
+# 
+# TEST_RUNNER = "restms.tests.test_runner_with_coverage"
+
 COVERAGE_MODULES = ( 
     "restms.handlers.base",
     "restms.handlers.header",

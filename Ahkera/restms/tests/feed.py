@@ -24,31 +24,31 @@ class feedTestCase(TestCase):
             'Announcements' : """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <feed
-       name="Announcements"
-       type=""
-       title="Announcement channel."
-       license="None"
-     />
+        name="Announcements"
+        type=""
+        title="Announcement channel."
+        license="None"
+    />
 </restms>
 """,
             'commands'      : """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <feed
-       name="commands"
-       type="fifo"
-       title="Command processing queue"
-       license="GPL"
-     />
+        name="commands"
+        type="fifo"
+        title="Command processing queue"
+        license="GPL"
+    />
 </restms>
 """,
             'direct'        : """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <feed
-       name="direct"
-       type="direct"
-       title="Direct feed"
-       license="proprietary"
-     />
+        name="direct"
+        type="direct"
+        title="Direct feed"
+        license="proprietary"
+    />
 </restms>
 """}
         for feed in expected:
@@ -80,7 +80,7 @@ class feedTestCase(TestCase):
 
         r = self.client.get('/restms/feed/Announcements')
         self.assertEqual(r.status_code, 200)
-        self.assertTrue(tools.linediff(r.response, """<?xml version="1.0"?>
+        self.assertTrue(tools.linediff(r.content, """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <feed
         name="Announcements"

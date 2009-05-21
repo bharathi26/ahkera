@@ -78,7 +78,7 @@ class domainTestCase(TestCase):
         self.assertEqual(r.status_code, 405)
 
     def testPOSTFeed(self):
-        """Simple domain POST test creating a test runner feed (without check)"""
+        """Simple domain POST test creating a test runner feed"""
         r = self.client.post('/restms/domain/Serenity',
                 content_type="restms+xml",
                 data = """<?xml version="1.0"?>
@@ -89,6 +89,20 @@ class domainTestCase(TestCase):
                            </restms>
                         """ )
         self.assertEqual(r.status_code, 201)
+        loc = r["Location"].split("/")[-1]
+        r = self.client.get('/restms/feed/%s' % loc)
+        self.assertEqual(r.status_code, 200)
+
+    def testPOSTExistingFeed(self):
+        """Simple domain POST test posting an existing feed"""
+        r = self.client.post('/restms/domain/Serenity',
+                content_type="restms+xml",
+                data = """<?xml version="1.0"?>
+                           <restms xmlns="http://www.restms.org/schema/restms">
+                              <feed name="Announcements" />
+                           </restms>
+                        """ )
+        self.assertEqual(r.status_code, 200)
 
     def testPOSTPipe(self):
         """Simple domain POST test creating a test runner pipe"""
@@ -100,4 +114,7 @@ class domainTestCase(TestCase):
                            </restms>
                         """ )
         self.assertEqual(r.status_code, 201)
+        loc = r["Location"].split("/")[-1]
+        r = self.client.get('/restms/resource/%s' % loc)
+        self.assertEqual(r.status_code, 200)
 

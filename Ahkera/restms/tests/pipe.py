@@ -110,17 +110,24 @@ class pipeTestCase(TestCase):
         self.assertEqual(r.status_code, 404)
 
     def testPOST(self):
-        """Simple pipe POST test (does not check for join existence)"""
-
-        r = self.client.post('/restms/resource/pipe_1', content_type="restms+xml",
+        """Complex pipe POST test"""
         data = """<?xml version="1.0"?>
-             <restms xmlns="http://www.restms.org/schema/restms">
-                    <join
-                        address="alt.rec.misc"
-                        feed="Announcements" >
-                        <header name="some test header" value="qwertz">
-                        <header name="more test header" value="brfff">
-             </restms>
-             """)
+<restms xmlns="http://www.restms.org/schema/restms">
+    <join
+        address="alt.rec.misc"
+        feed="http://testserver/restms/feed/Announcements">
+        <header name="some test header" value="qwertz" />
+        <header name="more test header" value="brfff" />
+    </join>
+</restms>
+"""
+        r = self.client.post('/restms/resource/pipe_1', content_type="restms+xml",
+            data = data)
+        self.assertEqual(r.status_code, 201)
+        self.assertTrue(tools.linediff(r.content, data))
+
+        join_loc = r["Location"].split("/")[-1]
+        r = self.client.get('/restms/resource/%s' % join_loc)
         self.assertEqual(r.status_code, 200)
+        self.assertTrue(tools.linediff(r.content, data))
 

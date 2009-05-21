@@ -15,35 +15,48 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseNotAllow
 from django.core.exceptions import ObjectDoesNotExist
 import restms.models as handlers
 
-def _handler_or_405(method, resource, args):
+def _handler_or_error(request, resource):
     try:
-        handler = getattr(resource, method)
+        handler = getattr(resource, request.method)
     except AttributeError:
         allowed = [ m for m in ('GET', 'PUT', 'POST', 'DELETE') 
                     if hasattr(resource, m) ]
         return HttpResponseNotAllowed(allowed)
-    return handler(*args)
+    #check for content type except for feeds, which may receive staged content
+    if ((resource.resource_type != "feed") or (request.method != 'POST')) \
+          and request.method in [ 'PUT', 'POST' ]:
+        try:
+            if not (request.META['CONTENT_TYPE'] 
+                    in ["restms+xml","restms+json"]):
+                return HttpResponseBadRequest("Unsupported content type %s" 
+                    % request.META['CONTENT_TYPE'])
+        except KeyError:
+            return HttpResponseBadRequest("Missing content type in request")
+    return handler(request)
 
 def resource(request, type, hash):
     # find the corresponding resource object
-    handler = getattr(handlers, type)
+    try:
+        handler = getattr(handlers, type)
+    except:
+        return HttpResponseBadRequest()
     try: 
         res = handler.objects.get(hash=hash)
     except ObjectDoesNotExist: 
         return HttpResponseNotFound()
-    return _handler_or_405(request.method, res, (request,))
+    return _handler_or_error(request, res)
 
 def feeder(request, name=None):
     try: 
         res = handlers.feed.objects.get(name=name)
     except ObjectDoesNotExist: 
         return HttpResponseNotFound()
-    return _handler_or_405(request.method, res, (request,))
+    return _handler_or_error(request, res)
 
 def domain(request, name = None):
     try: 
         res = handlers.domain.objects.get(name=name)
     except ObjectDoesNotExist: 
         return HttpResponseNotFound()
-    return _handler_or_405(request.method, res, (request,))
+    return _handler_or_error(request, res)
 

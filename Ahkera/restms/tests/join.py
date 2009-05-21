@@ -23,40 +23,40 @@ class joinTestCase(TestCase):
         expected = ["""<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <join
-        address="*">
-        feed="http://testserver/restms/feed/commands"
-     </join>
+        address="*"
+        feed="http://testserver/restms/feed/commands">
+    </join>
 </restms>
 """, """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <join
-        address="server.warn.*">
-        feed="http://testserver/restms/feed/Announcements"
-     </join>
+        address="server.warn.*"
+        feed="http://testserver/restms/feed/Announcements">
+    </join>
 </restms>
 """, """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <join
-        address="*">
-        feed="http://testserver/restms/feed/commands"
+        address="*"
+        feed="http://testserver/restms/feed/commands">
         <header name="test header" value="for a command join" />
-     </join>
+    </join>
 </restms>
 """, """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <join
-        address="events.*">
-        feed="http://testserver/restms/feed/Announcements"
-     </join>
+        address="events.*"
+        feed="http://testserver/restms/feed/Announcements">
+    </join>
 </restms>
 """, """<?xml version="1.0"?>
 <restms xmlns="http://www.restms.org/schema/restms">
     <join
-        address="*">
-        feed="http://testserver/restms/feed/direct"
+        address="*"
+        feed="http://testserver/restms/feed/direct">
         <header name="my very own header" value="for a join" />
         <header name="plus another header" value="for the same join" />
-     </join>
+    </join>
 </restms>
 """ ]
         for i in range(1,len(expected) + 1):
@@ -85,7 +85,7 @@ class joinTestCase(TestCase):
                 data = """<?xml version="1.0"?>
                            <restms xmlns="http://www.restms.org/schema/restms">
                               <join address="server.*"
-                                feed="http://testserver/restms/feed/Announcements"
+                                feed="http://testserver/restms/feed/Announcements>"
                               </join>
                            </restms>
                        """)

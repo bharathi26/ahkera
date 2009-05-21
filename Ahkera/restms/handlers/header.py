@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 from django.db import models
-from base import BaseHandler
+from . import BaseHandler
 
 class base_header(BaseHandler):
     """Abstract base class for RestMS headers"""

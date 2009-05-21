@@ -14,9 +14,9 @@
 
 from django.contrib import admin
 from restms.models import feed, pipe, join, message, domain
-from handlers.message.main import message_header, message_data
+from handlers.message import message_header, message_data
 from handlers.message.content import content, content_data
-from handlers.join.main import join_header
+from handlers.join import join_header
 from handlers.domain.profile import profile
 
 class FeedAdmin(admin.ModelAdmin):

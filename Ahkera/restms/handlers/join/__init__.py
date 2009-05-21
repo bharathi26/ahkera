@@ -11,3 +11,53 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+from django.db import models
+from django.template import Context, loader
+from django.http import HttpResponse
+
+from restms.handlers import BaseHandler
+from restms.handlers.header import base_header
+
+class join_header(base_header):
+    """Header used in JOINs"""
+    class Meta: 
+        app_label = 'restms'
+    join = models.ForeignKey('join')
+
+class join(BaseHandler):
+    """ A RestMS join. """
+
+    # clutch to make django object-relational magic work
+    class Meta: app_label = 'restms'
+
+    # table ----------
+    address = models.CharField(max_length=100)
+    type    = models.CharField(max_length=100, editable=False, blank=True )
+    feed    = models.ForeignKey('feed')
+    pipe    = models.ForeignKey('pipe')
+    # table ----------
+
+    resource_type = "join"
+
+    # Methods:
+    #
+    # GET - retrieves the join representation.
+    # DELETE - deletes the join.
+
+    def __unicode__(self):
+        return "#%s: feed [%s] ==> pipe [%s]" % (self.hash, self.feed, self.pipe)
+
+    DELETE = lambda self, request: self.default_DELETE(request)
+
+    def render(self, request):
+        t = loader.get_template("join/get.xml")
+        c = Context({'join'     : self,
+                     'feed'     : self.feed,
+                     'headers'  : self.join_header_set.all(),
+                     'base_url' : request.build_absolute_uri('/')})
+        return t.render(c)
+
+    def GET(self, request):
+        """ JOIN getter """
+        return HttpResponse(self.render(request))
+

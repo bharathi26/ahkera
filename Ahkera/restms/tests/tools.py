@@ -55,13 +55,14 @@ def extract_header(response):
     return buf
 
 def linediff(s1, s2, message=""):
-    if s1 == s2: return True
+    if s1 == s2: 
+        return True
     a = s1.split("\n")
     b = s2.split("\n")
     if len(a) > len(b):
-        b.extend([ "" for i in range( len(a) - len(b)) ])
+        b.extend([ " !missing line! " for i in range( len(a) - len(b)) ])
     elif  len(a) < len(b):
-        a.extend([ "" for i in range( len(b) - len(a)) ])
+        a.extend([ " !missing line! " for i in range( len(b) - len(a)) ])
     for i in range(len(a)):
         if a[i] != b[i]: 
             print "Line #%d %s:\nis : [%s]\nexp: [%s]" % (i, message, a[i], b[i])
